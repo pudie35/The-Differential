@@ -823,6 +823,49 @@ section {
   }
 }
 
+/* Mobile-specific fixes: cramped masthead and overlapping fixture times */
+@media (max-width: 520px) {
+  .masthead {
+    padding: 22px 16px 20px;
+  }
+
+  .masthead-inner {
+    gap: 18px;
+  }
+
+  .masthead-gw-number {
+    font-size: 2rem;
+  }
+
+  .masthead-right {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .fixture-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .fixture-row-team,
+  .fixture-row-team.away {
+    justify-content: flex-start;
+    text-align: left;
+    width: 100%;
+  }
+
+  .fixture-row-vs {
+    display: none;
+  }
+
+  .fixture-row-time {
+    width: 100%;
+    text-align: left;
+    margin-top: 2px;
+  }
+}
+
 /* ---------------------------------------------------------------- */
 /* Live scores sliding ticker                                        */
 /* ---------------------------------------------------------------- */
