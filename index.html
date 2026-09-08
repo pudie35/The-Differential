@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Differential</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <header class="masthead">
+    <div class="masthead-inner">
+      <div>
+        <p class="masthead-title">The Differential</p>
+        <p class="masthead-greeting" id="masthead-greeting"></p>
+        <div class="masthead-gw">
+          <span class="masthead-gw-number" id="gw-number">—</span>
+          <span class="masthead-gw-label" id="gw-label">Loading gameweek…</span>
+        </div>
+      </div>
+      <div class="masthead-right">
+        <button class="theme-switch" id="theme-toggle" aria-label="Toggle dark mode">
+          <span class="theme-switch-thumb"></span>
+        </button>
+        <div class="masthead-deadline">
+          <p class="masthead-deadline-label">Deadline</p>
+          <div id="deadline-date">—</div>
+          <div id="deadline-countdown" class="countdown"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <section id="section-live-scores">
+      <h2 class="section-label">This Gameweek</h2>
+      <p class="section-note">Live and finished matches only — upcoming fixtures for this gameweek appear below once you're closer to kickoff.</p>
+      <div class="scores-track-outer">
+        <div class="scores-track" id="scores-track">
+          <p class="loading-text">Loading fixtures…</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="section-upcoming-fixtures">
+      <h2 class="section-label">Next 3 Gameweeks</h2>
+      <div id="upcoming-fixtures-list">
+        <p class="loading-text">Loading fixtures…</p>
+      </div>
+    </section>
+
+    <section id="section-fixture-swing">
+      <h2 class="section-label">Fixture Swing Picks</h2>
+      <p class="section-note">Teams with 3 straight easy fixtures ahead — a genuine run worth targeting, not just one good match.</p>
+      <div id="fixture-swing-container">
+        <p class="loading-text">Loading…</p>
+      </div>
+    </section>
+
+    <section id="section-transfer-planner">
+      <h2 class="section-label">Transfer Planner</h2>
+      <p class="section-note">Compare a transfer before you make it, and see whether it'll cost you a hit.</p>
+      <div class="setup-card">
+        <div class="setup-row">
+          <label style="font-size:0.85rem;color:var(--mid);display:flex;align-items:center;gap:8px">
+            Free transfers available:
+            <input type="number" id="free-transfers-input" class="lookup-input" style="width:70px;flex:none" min="0" max="5" value="1" />
+          </label>
+        </div>
+        <div class="setup-row">
+          <input type="text" list="player-list" id="transfer-out-input" class="lookup-input" placeholder="Player transferring OUT" />
+          <input type="text" list="player-list" id="transfer-in-input" class="lookup-input" placeholder="Player transferring IN" />
+          <button class="lookup-button" id="transfer-compare-button">Compare</button>
+        </div>
+      </div>
+      <div id="transfer-planner-result"></div>
+    </section>
+
+    <section id="section-recommendations">
+      <h2 class="section-label">Players to Target</h2>
+      <p class="section-note">Scored on fixture run, nailed-minutes reliability, underlying stats, and set-piece involvement — a heuristic, not a guarantee. Injury/rotation doubts are excluded here.</p>
+      <div id="recommendations-container">
+        <p class="loading-text">Loading recommendations…</p>
+      </div>
+    </section>
+
+    <section id="section-goals-assists">
+      <h2 class="section-label">Goals &amp; Assists</h2>
+      <div class="two-col">
+        <div>
+          <p class="rec-position-label">Top Scorers</p>
+          <div id="top-scorers-container">
+            <p class="loading-text">Loading…</p>
+          </div>
+        </div>
+        <div>
+          <p class="rec-position-label">Top Assists</p>
+          <div id="top-assisters-container">
+            <p class="loading-text">Loading…</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="section-strategy-notes">
+      <h2 class="section-label">Strategy Notes</h2>
+      <div class="strategy-card">
+        <ul class="strategy-list">
+          <li>Judge a player on their fixture run over the next 3–6 Gameweeks, not one big haul or one blank.</li>
+          <li>Avoid a -4 point transfer hit unless it's for an injury or suspension — it rarely pays off otherwise.</li>
+          <li>Wait for team news close to the Friday/Saturday deadline before transferring, unless chasing a price change.</li>
+          <li>Only back a low-ownership differential if their underlying stats and fixtures actually support it.</li>
+          <li>Prioritize nailed-on starters over higher-ceiling players who are rotation risks.</li>
+          <li>Save your Wildcard for a genuine squad overhaul, not a few bad picks.</li>
+        </ul>
+        <p class="strategy-chip-note">2026/27 chip rules: 8 chips total — one Wildcard, Free Hit, Bench Boost, and Triple Captain per half of the season. The first set must be used before the Gameweek 19 deadline and does not carry over.</p>
+      </div>
+    </section>
+
+    <section id="section-my-squad">
+      <h2 class="section-label">My Squad</h2>
+      <div id="my-squad-container">
+        <p class="loading-text">Loading…</p>
+      </div>
+    </section>
+
+    <section id="section-ticker">
+      <h2 class="section-label">Fixture Difficulty — Next 5</h2>
+      <p class="section-note">Lower numbers (green) are easier fixtures based on FPL's difficulty rating.</p>
+      <div class="ticker panel" id="ticker-container">
+        <p class="loading-text">Loading fixtures…</p>
+      </div>
+    </section>
+
+    <section id="section-table">
+      <h2 class="section-label">League Table <span id="table-live-badge"></span></h2>
+      <p class="section-note">Computed from match results, live while games are in progress — the FPL API has no standings endpoint of its own.</p>
+      <div class="table-filter-row">
+        <button class="filter-pill active" data-filter="all">All</button>
+        <button class="filter-pill" data-filter="home">Home</button>
+        <button class="filter-pill" data-filter="away">Away</button>
+      </div>
+      <div class="panel table-panel">
+        <table class="sheet" id="league-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Team</th>
+              <th>P</th>
+              <th>W</th>
+              <th>D</th>
+              <th>L</th>
+              <th>GD</th>
+              <th>Pts</th>
+            </tr>
+          </thead>
+          <tbody id="league-table-body">
+            <tr><td colspan="8" class="loading-text">Loading table…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="section-differentials">
+      <h2 class="section-label">Differentials Watch</h2>
+      <p class="section-note">Low ownership, strong underlying stats — players flying under the radar.</p>
+      <div class="panel table-panel">
+        <table class="sheet">
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Owned</th>
+              <th>Form</th>
+              <th>xGI</th>
+            </tr>
+          </thead>
+          <tbody id="differentials-body">
+            <tr><td colspan="4" class="loading-text">Loading players…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="section-set-piece">
+      <h2 class="section-label">Set-Piece Takers</h2>
+      <p class="section-note">From player order data — more current than FPL's own notes early season.</p>
+      <div class="panel" id="takers-container">
+        <p class="loading-text">Loading takers…</p>
+      </div>
+    </section>
+
+    <section id="section-clean-sheets">
+      <h2 class="section-label">Clean Sheet Watch</h2>
+      <p class="section-note">Blends each team's recent defensive form with their next opponent's recent attacking form.</p>
+      <div id="clean-sheet-container">
+        <p class="loading-text">Loading team form…</p>
+      </div>
+    </section>
+
+    <section id="section-lookup">
+      <h2 class="section-label">Player vs Next Opponent</h2>
+      <p class="section-note">Search a player to see their goal-involvement history against their next opponent, and whether it's worth selecting them.</p>
+      <div class="lookup-row">
+        <input
+          type="text"
+          list="player-list"
+          id="player-search"
+          class="lookup-input"
+          placeholder="Start typing a player's name…"
+        />
+        <datalist id="player-list"></datalist>
+        <button class="lookup-button" id="lookup-button">Check</button>
+      </div>
+      <div id="verdict-container">
+        <p class="empty-text">Search for a player above to see their verdict.</p>
+      </div>
+    </section>
+
+    <section id="section-explainer">
+      <h2 class="section-label">How This Works</h2>
+      <p class="section-note">What the terms and colors on this page actually mean.</p>
+
+      <details class="explainer-item">
+        <summary>Fixture Difficulty Rating (FDR)</summary>
+        <p>FPL's own 1–5 rating of how tough a fixture looks, from that team's point of view. 1–2 (green) is an easier fixture, 3 (gray) is average, 4–5 (coral) is a tough one. It's a blunt tool — a good defense on paper can still concede, and vice versa — so treat it as a starting point, not gospel.</p>
+      </details>
+
+      <details class="explainer-item">
+        <summary>xGI and xGI per 90</summary>
+        <p>Expected Goal Involvements — a stat that estimates how many goals and assists a player "should" have produced based on the quality of chances they were involved in, regardless of whether they actually went in. "Per 90" adjusts for minutes played, so a player who's only started a few games can still be compared fairly against a nailed-on starter.</p>
+      </details>
+
+      <details class="explainer-item">
+        <summary>Nailed-on starter vs rotation risk</summary>
+        <p>Based on how many of the team's finished games a player has actually started this season. A high ratio means they're rarely rested or benched — a more reliable source of points than a talented player who might not even play.</p>
+      </details>
+
+      <details class="explainer-item">
+        <summary>Differential</summary>
+        <p>A low-ownership player (under 10% here) who could gain you rank if they perform, since few other managers have them. This dashboard only calls out a differential when their underlying stats (xGI per 90) actually support it — being unpopular alone isn't a reason to pick someone.</p>
+      </details>
+
+      <details class="explainer-item">
+        <summary>Clean sheet likelihood</summary>
+        <p>Blends a team's own recent defensive form (goals conceded per game, last 5) with their next opponent's recent attacking form (goals scored per game, last 5), with a small adjustment for home advantage. "Good chance," "Toss-up," and "Unlikely" are the three verdicts you'll see.</p>
+      </details>
+
+      <details class="explainer-item">
+        <summary>Set-piece takers</summary>
+        <p>Pulled from each player's penalty, free-kick, and corner order (1 = primary taker). This is usually more reliable early in the season than FPL's own set-piece notes, which can take a while to get populated.</p>
+      </details>
+
+      <details class="explainer-item">
+        <summary>Get / Monitor / Avoid and Keep / Monitor / Sell</summary>
+        <p>A heuristic score combining fixture run, nailed-minutes reliability, underlying stats, set-piece involvement, and injury/rotation flags. "Get" or "Keep" means the signals line up well right now — not a guarantee of returns. Use it as one input among several, not the final word.</p>
+      </details>
+
+      <details class="explainer-item">
+        <summary>League table filters (All / Home / Away)</summary>
+        <p>"Home" and "Away" recompute the whole table using only each team's home or away results — useful for spotting teams that are strong at home but shaky on the road, or vice versa.</p>
+      </details>
+    </section>
+
+  </div>
+
+  <div class="modal-overlay" id="player-modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" id="modal-close">×</button>
+      <div id="modal-body"><p class="loading-text">Loading…</p></div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
