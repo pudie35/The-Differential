@@ -47,13 +47,6 @@
       </div>
     </section>
 
-    <section id="section-upcoming-fixtures">
-      <h2 class="section-label">Next 3 Gameweeks</h2>
-      <div id="upcoming-fixtures-list">
-        <p class="loading-text">Loading fixtures…</p>
-      </div>
-    </section>
-
     <section id="section-fixture-swing">
       <h2 class="section-label">Fixture Swing Picks</h2>
       <p class="section-note">Teams with 3 straight easy fixtures ahead — a genuine run worth targeting, not just one good match.</p>
@@ -168,28 +161,16 @@
 
     <section id="section-differentials">
       <h2 class="section-label">Differentials Watch</h2>
-      <p class="section-note">Low ownership, strong underlying stats — players flying under the radar.</p>
-      <div class="panel table-panel">
-        <table class="sheet">
-          <thead>
-            <tr>
-              <th>Player</th>
-              <th>Owned</th>
-              <th>Form</th>
-              <th>xGI</th>
-            </tr>
-          </thead>
-          <tbody id="differentials-body">
-            <tr><td colspan="4" class="loading-text">Loading players…</td></tr>
-          </tbody>
-        </table>
+      <p class="section-note">Low ownership players whose underlying stats and fixtures actually support picking them — not just "low owned with decent form".</p>
+      <div id="differentials-container">
+        <p class="loading-text">Loading players…</p>
       </div>
     </section>
 
     <section id="section-set-piece">
       <h2 class="section-label">Set-Piece Takers</h2>
       <p class="section-note">From player order data — more current than FPL's own notes early season.</p>
-      <div class="panel" id="takers-container">
+      <div class="takers-grid" id="takers-container">
         <p class="loading-text">Loading takers…</p>
       </div>
     </section>
@@ -218,6 +199,14 @@
       </div>
       <div id="verdict-container">
         <p class="empty-text">Search for a player above to see their verdict.</p>
+      </div>
+    </section>
+
+    <section id="section-upcoming-fixtures">
+      <h2 class="section-label">Upcoming Fixtures</h2>
+      <div class="table-filter-row" id="gw-tab-row"></div>
+      <div id="upcoming-fixtures-list">
+        <p class="loading-text">Loading fixtures…</p>
       </div>
     </section>
 

@@ -1063,35 +1063,59 @@ table.sheet tr:last-child td {
 /* Set-piece takers panel                                             */
 /* ---------------------------------------------------------------- */
 
+.takers-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 8px;
+}
+
+@media (max-width: 1100px) {
+  .takers-grid { grid-template-columns: repeat(5, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .takers-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
 .takers-team {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 12px;
-  padding: 12px 14px;
-  margin-bottom: 10px;
+  border-radius: 10px;
+  padding: 8px 9px;
+  min-width: 0;
 }
 
 .takers-team-name {
   font-weight: 600;
-  font-size: 0.88rem;
-  margin-bottom: 6px;
+  font-size: 0.74rem;
+  margin-bottom: 5px;
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.takers-team-name .club-badge {
+  width: 15px;
+  height: 15px;
 }
 
 .takers-role {
-  font-size: 0.82rem;
+  font-size: 0.68rem;
   color: var(--ink);
   display: flex;
-  gap: 6px;
-  padding: 2px 0;
+  flex-direction: column;
+  gap: 0;
+  padding: 3px 0;
 }
 
 .takers-role-label {
   color: var(--mid);
-  width: 88px;
-  flex-shrink: 0;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 /* ---------------------------------------------------------------- */

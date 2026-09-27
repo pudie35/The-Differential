@@ -18,6 +18,7 @@ import {
   getPlayerRecommendation,
   getTopRecommendationsByPosition,
   isGameweekLive,
+  getRealDifferentials,
   getTopScorers,
   getTopAssisters,
   getFixtureSwingPicks,
@@ -204,46 +205,63 @@ function renderLiveScores() {
 // Upcoming fixtures ticker (next 3 gameweeks)
 // ---------------------------------------------------------------------
 
-function renderUpcomingFixtures() {
+let upcomingFixtureGroups = new Map();
+
+function renderFixtureRowsForGw(eventId) {
   const container = document.getElementById('upcoming-fixtures-list');
+  const gwFixtures = upcomingFixtureGroups.get(eventId) || [];
+
+  container.innerHTML = gwFixtures.map((f) => {
+    const home = teamsById.get(f.team_h);
+    const away = teamsById.get(f.team_a);
+    const kickoff = new Date(f.kickoff_time);
+    const timeStr = kickoff.toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+    return `
+      <div class="fixture-row">
+        <div class="fixture-row-team">${badgeImgHtml(home)}${home.name}</div>
+        <div class="fixture-row-vs">vs</div>
+        <div class="fixture-row-team away">${away.name}${badgeImgHtml(away)}</div>
+        <div class="fixture-row-time">${timeStr}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderUpcomingFixtures() {
+  const listContainer = document.getElementById('upcoming-fixtures-list');
+  const tabRow = document.getElementById('gw-tab-row');
   const upcoming = getUpcomingGameweeksFixtures(bootstrap, fixtures, 3);
 
   if (upcoming.length === 0) {
-    container.innerHTML = '<p class="empty-text">No upcoming fixtures found.</p>';
+    tabRow.innerHTML = '';
+    listContainer.innerHTML = '<p class="empty-text">No upcoming fixtures found.</p>';
     return;
   }
 
   // Group fixtures by gameweek, in order.
-  const groups = new Map();
+  upcomingFixtureGroups = new Map();
   for (const f of upcoming) {
-    if (!groups.has(f.event)) groups.set(f.event, []);
-    groups.get(f.event).push(f);
+    if (!upcomingFixtureGroups.has(f.event)) upcomingFixtureGroups.set(f.event, []);
+    upcomingFixtureGroups.get(f.event).push(f);
   }
 
-  container.innerHTML = [...groups.entries()].map(([eventId, gwFixtures]) => {
-    const rows = gwFixtures.map((f) => {
-      const home = teamsById.get(f.team_h);
-      const away = teamsById.get(f.team_a);
-      const kickoff = new Date(f.kickoff_time);
-      const timeStr = kickoff.toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  const eventIds = [...upcomingFixtureGroups.keys()];
 
-      return `
-        <div class="fixture-row">
-          <div class="fixture-row-team">${badgeImgHtml(home)}${home.name}</div>
-          <div class="fixture-row-vs">vs</div>
-          <div class="fixture-row-team away">${away.name}${badgeImgHtml(away)}</div>
-          <div class="fixture-row-time">${timeStr}</div>
-        </div>
-      `;
-    }).join('');
+  tabRow.innerHTML = eventIds.map((id, i) =>
+    `<button class="filter-pill${i === 0 ? ' active' : ''}" data-gw="${id}">GW ${id}</button>`
+  ).join('');
 
-    return `
-      <div class="gw-group">
-        <div class="gw-group-header">Gameweek ${eventId}</div>
-        ${rows}
-      </div>
-    `;
-  }).join('');
+  tabRow.querySelectorAll('.filter-pill').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      tabRow.querySelectorAll('.filter-pill').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderFixtureRowsForGw(parseInt(btn.dataset.gw, 10));
+    });
+  });
+
+  // Show the first (soonest) gameweek by default.
+  renderFixtureRowsForGw(eventIds[0]);
 }
 
 // ---------------------------------------------------------------------
@@ -355,30 +373,27 @@ function renderFixtureTicker() {
 // ---------------------------------------------------------------------
 
 function renderDifferentials() {
-  const tbody = document.getElementById('differentials-body');
-  tbody.innerHTML = '';
-
-  const differentials = bootstrap.elements
-    .filter((p) => parseFloat(p.selected_by_percent) < 10 && parseFloat(p.form) > 0)
-    .sort((a, b) => parseFloat(b.form) - parseFloat(a.form))
-    .slice(0, 10);
-
-  for (const player of differentials) {
-    const tr = document.createElement('tr');
-    tr.className = 'clickable-player';
-    tr.dataset.playerId = player.id;
-    tr.innerHTML = `
-      <td>${player.web_name}</td>
-      <td class="num">${player.selected_by_percent}%</td>
-      <td class="num">${player.form}</td>
-      <td class="num">${player.expected_goal_involvements}</td>
-    `;
-    tbody.appendChild(tr);
-  }
+  const container = document.getElementById('differentials-container');
+  const differentials = getRealDifferentials(bootstrap, fixtures, 8);
 
   if (differentials.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" class="empty-text">No qualifying differentials found yet.</td></tr>';
+    container.innerHTML = '<p class="empty-text">No differentials with strong enough underlying stats yet — check back as the season builds up sample size.</p>';
+    return;
   }
+
+  container.innerHTML = differentials.map(({ player, recommendation }) => {
+    const team = teamsById.get(player.team);
+    const reason = recommendation.reasons[0] || `${player.selected_by_percent}% owned, xGI/90 ${player.expected_goal_involvements_per_90}`;
+    return `
+      <div class="rec-item clickable-player" data-player-id="${player.id}">
+        <div class="rec-item-header">
+          <span class="rec-item-name">${badgeImgHtml(team)}${player.web_name}</span>
+          <span class="rec-tag ${tagClassFor(recommendation.tag)}">${recommendation.tag}</span>
+        </div>
+        <div class="rec-item-reason">${player.selected_by_percent}% owned · ${reason}</div>
+      </div>
+    `;
+  }).join('');
 }
 
 // ---------------------------------------------------------------------

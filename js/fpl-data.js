@@ -200,6 +200,21 @@ export function getPlayerRecommendation(player, bootstrap, fixtures) {
 }
 
 /**
+ * Real differentials: low-owned players whose underlying stats and
+ * fixture run actually support picking them - not just "low ownership,
+ * happens to have decent form". Reuses the same scoring as the main
+ * recommendation engine, filtered to genuine low-ownership picks.
+ */
+export function getRealDifferentials(bootstrap, fixtures, count = 8, ownershipCeiling = 10) {
+  return bootstrap.elements
+    .filter((p) => parseFloat(p.selected_by_percent || 0) < ownershipCeiling && p.minutes > 0)
+    .map((p) => ({ player: p, recommendation: getPlayerRecommendation(p, bootstrap, fixtures) }))
+    .filter((r) => r.recommendation.tag !== 'Avoid' && r.recommendation.xgi90 > 0.3)
+    .sort((a, b) => b.recommendation.score - a.recommendation.score)
+    .slice(0, count);
+}
+
+/**
  * Top recommended players for a given position (element_type: 1=GKP,
  * 2=DEF, 3=MID, 4=FWD), ranked by score. Excludes anyone currently
  * flagged as a doubt, since "Get this player" shouldn't recommend an
