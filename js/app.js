@@ -788,16 +788,16 @@ async function loadAndRenderSquad(container, teamId) {
   const elementTypeNames = { 1: 'GKP', 2: 'DEF', 3: 'MID', 4: 'FWD' };
   const squadTagLabel = { Get: 'Keep', Monitor: 'Monitor', Avoid: 'Sell' };
 
-  // Find the best captaincy candidate among the starting XI (positions 1-11).
-  let captainSuggestion = null;
-  for (const pick of picksData.picks) {
-    if (pick.position > 11) continue;
-    const player = bootstrap.elements.find((p) => p.id === pick.element);
-    const rec = getPlayerRecommendation(player, bootstrap, fixtures);
-    if (!captainSuggestion || rec.score > captainSuggestion.score) {
-      captainSuggestion = { player, score: rec.score };
-    }
-  }
+  // Top 3 captaincy candidates among the starting XI (positions 1-11) -
+  // giving a real choice to weigh, not just one dictated pick.
+  const captainCandidates = picksData.picks
+    .filter((pick) => pick.position <= 11)
+    .map((pick) => {
+      const player = bootstrap.elements.find((p) => p.id === pick.element);
+      return { player, recommendation: getPlayerRecommendation(player, bootstrap, fixtures) };
+    })
+    .sort((a, b) => b.recommendation.score - a.recommendation.score)
+    .slice(0, 3);
 
   const playerRows = picksData.picks.map((pick) => {
     const player = bootstrap.elements.find((p) => p.id === pick.element);
@@ -820,8 +820,21 @@ async function loadAndRenderSquad(container, teamId) {
     `;
   }).join('');
 
-  const captainCalloutHtml = captainSuggestion
-    ? `<div class="captain-callout"><span class="captain-callout-label">Suggested captain:</span> ${captainSuggestion.player.web_name}</div>`
+  const captainRowsHtml = captainCandidates.map(({ player, recommendation }, i) => {
+    const team = teamsById.get(player.team);
+    const reason = recommendation.reasons[0] || 'Solid all-round signal';
+    return `
+      <div class="captain-option-row">
+        <span class="captain-option-rank">${i + 1}</span>
+        ${badgeImgHtml(team)}
+        <span class="captain-option-name">${player.web_name}</span>
+        <span class="captain-option-reason">${reason}</span>
+      </div>
+    `;
+  }).join('');
+
+  const captainCalloutHtml = captainCandidates.length
+    ? `<div class="captain-callout"><div class="captain-callout-label">Captain options — ranked, but the call is yours</div>${captainRowsHtml}</div>`
     : '';
 
   container.innerHTML = `

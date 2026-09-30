@@ -67,6 +67,11 @@
   transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
 body {
   margin: 0;
   background: var(--cream);
@@ -357,6 +362,7 @@ a {
   border-radius: 10px;
   padding: 10px 14px;
   margin-bottom: 6px;
+  min-width: 0;
 }
 
 .rec-item-header {
@@ -364,6 +370,7 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  min-width: 0;
 }
 
 .rec-item-name {
@@ -372,6 +379,10 @@ a {
   gap: 7px;
   font-weight: 600;
   font-size: 0.88rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .rec-item-reason {
@@ -433,15 +444,42 @@ a {
   border-radius: 10px;
   padding: 12px 14px;
   margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
   font-size: 0.88rem;
 }
 
 .captain-callout-label {
   font-weight: 700;
   color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.captain-option-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  min-width: 0;
+}
+
+.captain-option-rank {
+  font-weight: 700;
+  color: var(--gold);
+  width: 16px;
+  flex-shrink: 0;
+}
+
+.captain-option-name {
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.captain-option-reason {
+  color: #6b5a2a;
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .masthead-right {
@@ -750,7 +788,7 @@ a {
 
 .squad-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(190px, 100%), 1fr));
   gap: 8px;
 }
 
@@ -763,6 +801,13 @@ a {
   align-items: center;
   gap: 8px;
   font-size: 0.85rem;
+  min-width: 0;
+}
+
+.squad-player-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .squad-player.is-bench {
@@ -1084,6 +1129,7 @@ table.sheet tr:last-child td {
   border: 1px solid var(--card-border);
   border-radius: 10px;
   padding: 10px 14px;
+  min-width: 0;
 }
 
 .takers-team-name {
@@ -1093,6 +1139,10 @@ table.sheet tr:last-child td {
   display: flex;
   align-items: center;
   gap: 7px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .takers-role {
