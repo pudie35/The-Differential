@@ -55,48 +55,11 @@
       </div>
     </section>
 
-    <section id="section-transfer-planner">
-      <h2 class="section-label">Transfer Planner</h2>
-      <p class="section-note">Compare a transfer before you make it, and see whether it'll cost you a hit.</p>
-      <div class="setup-card">
-        <div class="setup-row">
-          <label style="font-size:0.85rem;color:var(--mid);display:flex;align-items:center;gap:8px">
-            Free transfers available:
-            <input type="number" id="free-transfers-input" class="lookup-input" style="width:70px;flex:none" min="0" max="5" value="1" />
-          </label>
-        </div>
-        <div class="setup-row">
-          <input type="text" list="player-list" id="transfer-out-input" class="lookup-input" placeholder="Player transferring OUT" />
-          <input type="text" list="player-list" id="transfer-in-input" class="lookup-input" placeholder="Player transferring IN" />
-          <button class="lookup-button" id="transfer-compare-button">Compare</button>
-        </div>
-      </div>
-      <div id="transfer-planner-result"></div>
-    </section>
-
     <section id="section-recommendations">
       <h2 class="section-label">Players to Target</h2>
       <p class="section-note">Scored on fixture run, nailed-minutes reliability, underlying stats, and set-piece involvement — a heuristic, not a guarantee. Injury/rotation doubts are excluded here.</p>
       <div id="recommendations-container">
         <p class="loading-text">Loading recommendations…</p>
-      </div>
-    </section>
-
-    <section id="section-goals-assists">
-      <h2 class="section-label">Goals &amp; Assists</h2>
-      <div class="two-col">
-        <div>
-          <p class="rec-position-label">Top Scorers</p>
-          <div id="top-scorers-container">
-            <p class="loading-text">Loading…</p>
-          </div>
-        </div>
-        <div>
-          <p class="rec-position-label">Top Assists</p>
-          <div id="top-assisters-container">
-            <p class="loading-text">Loading…</p>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -127,35 +90,6 @@
       <p class="section-note">Lower numbers (green) are easier fixtures based on FPL's difficulty rating.</p>
       <div class="ticker panel" id="ticker-container">
         <p class="loading-text">Loading fixtures…</p>
-      </div>
-    </section>
-
-    <section id="section-table">
-      <h2 class="section-label">League Table <span id="table-live-badge"></span></h2>
-      <p class="section-note">Computed from match results, live while games are in progress — the FPL API has no standings endpoint of its own.</p>
-      <div class="table-filter-row">
-        <button class="filter-pill active" data-filter="all">All</button>
-        <button class="filter-pill" data-filter="home">Home</button>
-        <button class="filter-pill" data-filter="away">Away</button>
-      </div>
-      <div class="panel table-panel">
-        <table class="sheet" id="league-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Team</th>
-              <th>P</th>
-              <th>W</th>
-              <th>D</th>
-              <th>L</th>
-              <th>GD</th>
-              <th>Pts</th>
-            </tr>
-          </thead>
-          <tbody id="league-table-body">
-            <tr><td colspan="8" class="loading-text">Loading table…</td></tr>
-          </tbody>
-        </table>
       </div>
     </section>
 
@@ -202,11 +136,50 @@
       </div>
     </section>
 
-    <section id="section-upcoming-fixtures">
-      <h2 class="section-label">Upcoming Fixtures</h2>
-      <div class="table-filter-row" id="gw-tab-row"></div>
-      <div id="upcoming-fixtures-list">
-        <p class="loading-text">Loading fixtures…</p>
+    <section id="section-table">
+      <h2 class="section-label">League Table <span id="table-live-badge"></span></h2>
+      <p class="section-note">Computed from match results, live while games are in progress — the FPL API has no standings endpoint of its own.</p>
+      <div class="table-filter-row">
+        <button class="filter-pill active" data-filter="all">All</button>
+        <button class="filter-pill" data-filter="home">Home</button>
+        <button class="filter-pill" data-filter="away">Away</button>
+      </div>
+      <div class="panel table-panel">
+        <table class="sheet" id="league-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Team</th>
+              <th>P</th>
+              <th>W</th>
+              <th>D</th>
+              <th>L</th>
+              <th>GD</th>
+              <th>Pts</th>
+            </tr>
+          </thead>
+          <tbody id="league-table-body">
+            <tr><td colspan="8" class="loading-text">Loading table…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="section-goals-assists">
+      <h2 class="section-label">Goals &amp; Assists</h2>
+      <div class="two-col">
+        <div>
+          <p class="rec-position-label">Top Scorers</p>
+          <div id="top-scorers-container">
+            <p class="loading-text">Loading…</p>
+          </div>
+        </div>
+        <div>
+          <p class="rec-position-label">Top Assists</p>
+          <div id="top-assisters-container">
+            <p class="loading-text">Loading…</p>
+          </div>
+        </div>
       </div>
     </section>
 

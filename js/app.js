@@ -22,13 +22,11 @@ import {
   getTopScorers,
   getTopAssisters,
   getFixtureSwingPicks,
-  getUpcomingGameweeksFixtures,
 } from './fpl-data.js';
 
 const STORAGE_KEY_NAME = 'fpl_dashboard_name';
 const STORAGE_KEY_TEAM_ID = 'fpl_dashboard_team_id';
 const STORAGE_KEY_THEME = 'fpl_dashboard_theme';
-const STORAGE_KEY_FREE_TRANSFERS = 'fpl_dashboard_free_transfers';
 
 let bootstrap, fixtures, setPieceNotes;
 let teamsById, playersByName;
@@ -67,7 +65,6 @@ async function init() {
   renderMasthead();
   renderGreeting();
   renderLiveScores();
-  renderUpcomingFixtures();
   renderFixtureTicker();
   renderLeagueTable();
   wireUpTableFilters();
@@ -76,7 +73,6 @@ async function init() {
   renderCleanSheetWatch();
   renderRecommendations();
   renderFixtureSwingPicks();
-  wireUpTransferPlanner();
   renderGoalsAssists();
   renderMySquad();
   populatePlayerList();
@@ -202,68 +198,6 @@ function renderLiveScores() {
 }
 
 // ---------------------------------------------------------------------
-// Upcoming fixtures ticker (next 3 gameweeks)
-// ---------------------------------------------------------------------
-
-let upcomingFixtureGroups = new Map();
-
-function renderFixtureRowsForGw(eventId) {
-  const container = document.getElementById('upcoming-fixtures-list');
-  const gwFixtures = upcomingFixtureGroups.get(eventId) || [];
-
-  container.innerHTML = gwFixtures.map((f) => {
-    const home = teamsById.get(f.team_h);
-    const away = teamsById.get(f.team_a);
-    const kickoff = new Date(f.kickoff_time);
-    const timeStr = kickoff.toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-
-    return `
-      <div class="fixture-row">
-        <div class="fixture-row-team">${badgeImgHtml(home)}${home.name}</div>
-        <div class="fixture-row-vs">vs</div>
-        <div class="fixture-row-team away">${away.name}${badgeImgHtml(away)}</div>
-        <div class="fixture-row-time">${timeStr}</div>
-      </div>
-    `;
-  }).join('');
-}
-
-function renderUpcomingFixtures() {
-  const listContainer = document.getElementById('upcoming-fixtures-list');
-  const tabRow = document.getElementById('gw-tab-row');
-  const upcoming = getUpcomingGameweeksFixtures(bootstrap, fixtures, 3);
-
-  if (upcoming.length === 0) {
-    tabRow.innerHTML = '';
-    listContainer.innerHTML = '<p class="empty-text">No upcoming fixtures found.</p>';
-    return;
-  }
-
-  // Group fixtures by gameweek, in order.
-  upcomingFixtureGroups = new Map();
-  for (const f of upcoming) {
-    if (!upcomingFixtureGroups.has(f.event)) upcomingFixtureGroups.set(f.event, []);
-    upcomingFixtureGroups.get(f.event).push(f);
-  }
-
-  const eventIds = [...upcomingFixtureGroups.keys()];
-
-  tabRow.innerHTML = eventIds.map((id, i) =>
-    `<button class="filter-pill${i === 0 ? ' active' : ''}" data-gw="${id}">GW ${id}</button>`
-  ).join('');
-
-  tabRow.querySelectorAll('.filter-pill').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      tabRow.querySelectorAll('.filter-pill').forEach((b) => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderFixtureRowsForGw(parseInt(btn.dataset.gw, 10));
-    });
-  });
-
-  // Show the first (soonest) gameweek by default.
-  renderFixtureRowsForGw(eventIds[0]);
-}
-
 // ---------------------------------------------------------------------
 // Masthead
 // ---------------------------------------------------------------------
@@ -580,66 +514,6 @@ function renderFixtureSwingPicks() {
 // ---------------------------------------------------------------------
 // Transfer planner
 // ---------------------------------------------------------------------
-
-function wireUpTransferPlanner() {
-  const ftInput = document.getElementById('free-transfers-input');
-  const savedFt = localStorage.getItem(STORAGE_KEY_FREE_TRANSFERS);
-  if (savedFt != null) ftInput.value = savedFt;
-
-  ftInput.addEventListener('change', () => {
-    localStorage.setItem(STORAGE_KEY_FREE_TRANSFERS, ftInput.value);
-  });
-
-  document.getElementById('transfer-compare-button').addEventListener('click', handleTransferCompare);
-}
-
-function buildTransferCompareColumn(player, label) {
-  if (!player) {
-    return `<div class="transfer-compare-col"><div class="transfer-compare-label">${label}</div><p class="empty-text">Pick a player from the suggestions.</p></div>`;
-  }
-
-  const team = teamsById.get(player.team);
-  const rec = getPlayerRecommendation(player, bootstrap, fixtures);
-  const avgFixture = rec.avgFixtureDifficulty != null ? rec.avgFixtureDifficulty.toFixed(1) : '—';
-
-  return `
-    <div class="transfer-compare-col">
-      <div class="transfer-compare-label">${label}</div>
-      <div class="verdict-subject-row" style="margin-bottom:8px">${badgeImgHtml(team, 'club-badge-lg')}<span class="verdict-subject">${player.web_name}</span></div>
-      <span class="rec-tag ${tagClassFor(rec.tag)}">${rec.tag}</span>
-      <p style="font-size:0.82rem;color:var(--mid);margin:8px 0 0">Form ${player.form} · Next-5 fixture avg ${avgFixture} · ${rec.reasons[0] || 'No standout factors'}</p>
-    </div>
-  `;
-}
-
-function handleTransferCompare() {
-  const outName = document.getElementById('transfer-out-input').value.trim();
-  const inName = document.getElementById('transfer-in-input').value.trim();
-  const resultContainer = document.getElementById('transfer-planner-result');
-
-  const outPlayer = playersByName.get(outName);
-  const inPlayer = playersByName.get(inName);
-
-  if (!outPlayer || !inPlayer) {
-    resultContainer.innerHTML = '<p class="empty-text">Pick both players from the suggestions list.</p>';
-    return;
-  }
-
-  const freeTransfers = parseInt(document.getElementById('free-transfers-input').value, 10) || 0;
-  const willCostHit = freeTransfers < 1;
-
-  const hitBannerHtml = willCostHit
-    ? `<div class="transfer-hit-banner has-hit">This would cost a -4 point hit (0 free transfers available). Per the Strategy Notes, only worth it for an injury/suspension or a clear upgrade — not a marginal one.</div>`
-    : `<div class="transfer-hit-banner no-hit">This uses 1 of your free transfers — no point deduction.</div>`;
-
-  resultContainer.innerHTML = `
-    <div class="transfer-compare-grid">
-      ${buildTransferCompareColumn(outPlayer, 'Transferring OUT')}
-      ${buildTransferCompareColumn(inPlayer, 'Transferring IN')}
-    </div>
-    ${hitBannerHtml}
-  `;
-}
 
 // ---------------------------------------------------------------------
 // Goals & assists leaders

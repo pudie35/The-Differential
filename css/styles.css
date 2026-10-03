@@ -230,53 +230,6 @@ a {
   margin-bottom: 6px;
 }
 
-.transfer-compare-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 14px;
-}
-
-@media (max-width: 560px) {
-  .transfer-compare-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.transfer-compare-col {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  padding: 14px;
-}
-
-.transfer-compare-label {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--mid);
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.transfer-hit-banner {
-  border-radius: 10px;
-  padding: 10px 14px;
-  margin-top: 14px;
-  font-size: 0.86rem;
-  font-weight: 600;
-}
-
-.transfer-hit-banner.no-hit {
-  background: var(--good-bg);
-  color: var(--good);
-}
-
-.transfer-hit-banner.has-hit {
-  background: var(--risk-bg);
-  color: #5c1f16;
-}
-
 .score-gw-chip {
   font-size: 0.66rem;
   font-weight: 600;
@@ -285,58 +238,6 @@ a {
   padding: 2px 7px;
   border-radius: 6px;
   flex-shrink: 0;
-}
-
-.gw-group {
-  margin-bottom: 20px;
-}
-
-.gw-group-header {
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--mid);
-  margin-bottom: 8px;
-}
-
-.fixture-row {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
-  padding: 10px 14px;
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.88rem;
-}
-
-.fixture-row-team {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  flex: 1;
-  font-weight: 600;
-}
-
-.fixture-row-team.away {
-  justify-content: flex-end;
-  text-align: right;
-}
-
-.fixture-row-vs {
-  color: var(--mid);
-  font-size: 0.8rem;
-  flex-shrink: 0;
-  padding: 0 4px;
-}
-
-.fixture-row-time {
-  font-size: 0.76rem;
-  color: var(--mid);
-  flex-shrink: 0;
-  width: 108px;
-  text-align: right;
 }
 
 /* ---------------------------------------------------------------- */
@@ -868,7 +769,7 @@ section {
   }
 }
 
-/* Mobile-specific fixes: cramped masthead and overlapping fixture times */
+/* Mobile-specific fixes: cramped masthead */
 @media (max-width: 520px) {
   .masthead {
     padding: 22px 16px 20px;
@@ -885,29 +786,6 @@ section {
   .masthead-right {
     width: 100%;
     align-items: flex-start;
-  }
-
-  .fixture-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-
-  .fixture-row-team,
-  .fixture-row-team.away {
-    justify-content: flex-start;
-    text-align: left;
-    width: 100%;
-  }
-
-  .fixture-row-vs {
-    display: none;
-  }
-
-  .fixture-row-time {
-    width: 100%;
-    text-align: left;
-    margin-top: 2px;
   }
 }
 
